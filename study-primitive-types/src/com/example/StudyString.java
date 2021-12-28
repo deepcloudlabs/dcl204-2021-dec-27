@@ -3,6 +3,7 @@ package com.example;
 /**
  * @author Binnur Kurt <binnur.kurt@gmail.com>
  */
+@SuppressWarnings("unused")
 public class StudyString {
 
 	public static void main(String[] args) {

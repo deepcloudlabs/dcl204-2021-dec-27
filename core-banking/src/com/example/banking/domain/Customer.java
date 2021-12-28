@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 
 /**
  * @author Binnur Kurt <binnur.kurt@gmail.com>
@@ -33,8 +34,13 @@ public class Customer {
 	public void addAccount(Account account) {
 		accounts.add(account);
 	}
+	// Overloading: Same class & method name, different signature
+	// Overriding: Inherited Classes, same method name & signature
+	public Optional<Account> removeAccount(int index) {
+		return Optional.empty();
+	}
 	
-	public Account removeAccount(String iban) {
+	public Optional<Account> removeAccount(String iban) {
 		Account foundAccount = null;
 		for (var account : accounts) {
 			if (account.getIban().equals(iban)) {
@@ -44,12 +50,18 @@ public class Customer {
 		if (Objects.nonNull(foundAccount)) {
 			accounts.remove(foundAccount);
 		}
-		return foundAccount;
+		return Optional.ofNullable(foundAccount);
 	}
 	
 	public List<Account> getAccounts(){
 		return Collections.unmodifiableList(accounts);
 	}
+
+	@Override
+	public String toString() {
+		return "Customer [identity=" + identity + ", fullName=" + fullName + ", accounts=" + accounts + "]";
+	}
+	
 }
 
 

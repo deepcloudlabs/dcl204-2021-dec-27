@@ -5,6 +5,7 @@ import java.math.BigDecimal;
 /**
  * @author Binnur Kurt <binnur.kurt@gmail.com>
  */
+@SuppressWarnings("unused")
 public class StudyFloatingPoints {
 
 	public static void main(String[] args) {

@@ -14,9 +14,19 @@ public class Example {
 		jack.addAccount(new Account("tr1", 10_000));
 		jack.addAccount(new Account("tr2", 20_000));
 		jack.addAccount(new Account("tr3", 30_000));
-		//jack.getAccounts().add(new Account("tr4",40_000));
-		jack.getAccounts().clear();
 		kate.addAccount(new Account("tr4",20_000));
+		System.out.println(jack);
+		System.out.println(kate);
+		var balance = jack.removeAccount("tr2")
+		    .orElseThrow(() -> new IllegalArgumentException(
+		    		"Cannot find the account to remove"))
+		    .withdrawAll();
+		System.out.println(balance);
+		var account = jack.removeAccount("tr4");
+		if (account.isPresent())
+			account.get().withdrawAll();
+		System.out.println(jack);
+		
 	}
 
 }

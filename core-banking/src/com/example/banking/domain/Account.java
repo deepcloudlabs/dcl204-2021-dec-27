@@ -13,7 +13,7 @@ public class Account extends Object {
 	// Notes:
 	// balance is an instance and value-typed variable
 	// balance is automatically initialized to 0.0
-	private double balance;
+	double balance;
 
 	// Notes:
 	// Constructor is a special method used to initialize the object state
@@ -64,6 +64,12 @@ public class Account extends Object {
 	@Override
 	public String toString() {
 		return "Account [iban=" + iban + ", balance=" + balance + "]";
+	}
+
+	public double withdrawAll() {
+		var balance = this.balance;
+		this.balance = 0.0;
+		return balance;
 	}
 
 }

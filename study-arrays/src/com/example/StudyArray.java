@@ -7,6 +7,7 @@ import java.util.function.IntUnaryOperator;
 /**
  * @author Binnur Kurt <binnur.kurt@gmail.com>
  */
+@SuppressWarnings("unused")
 public class StudyArray {
 
 	public static void main(String[] args) {
