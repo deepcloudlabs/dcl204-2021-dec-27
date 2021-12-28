@@ -3,6 +3,7 @@ package com.example.banking.domain;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Objects;
 
 /**
  * @author Binnur Kurt <binnur.kurt@gmail.com>
@@ -32,6 +33,20 @@ public class Customer {
 	public void addAccount(Account account) {
 		accounts.add(account);
 	}
+	
+	public Account removeAccount(String iban) {
+		Account foundAccount = null;
+		for (var account : accounts) {
+			if (account.getIban().equals(iban)) {
+				foundAccount = account;	break;
+			}
+		}
+		if (Objects.nonNull(foundAccount)) {
+			accounts.remove(foundAccount);
+		}
+		return foundAccount;
+	}
+	
 	public List<Account> getAccounts(){
 		return Collections.unmodifiableList(accounts);
 	}

@@ -10,12 +10,13 @@ public class Example {
 
 	public static void main(String[] args) {
 		var jack = new Customer("11111111110", "jack bauer");
+		var kate = new Customer("11111111110", "kate austen");
 		jack.addAccount(new Account("tr1", 10_000));
 		jack.addAccount(new Account("tr2", 20_000));
 		jack.addAccount(new Account("tr3", 30_000));
 		//jack.getAccounts().add(new Account("tr4",40_000));
 		jack.getAccounts().clear();
-		
+		kate.addAccount(new Account("tr4",20_000));
 	}
 
 }
