@@ -10,6 +10,7 @@ import com.example.banking.domain.CheckingAccount;
  */
 public class StudyPolymorphism {
 
+	@SuppressWarnings("unused")
 	public static void main(String[] args) {
 		Object o;
 		o = 42;

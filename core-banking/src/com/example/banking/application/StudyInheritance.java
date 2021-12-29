@@ -5,6 +5,7 @@ package com.example.banking.application;
  */
 public class StudyInheritance {
 
+	@SuppressWarnings("unused")
 	public static void main(String[] args) {
 		A a = new A();	
 		E e = new E(42);
