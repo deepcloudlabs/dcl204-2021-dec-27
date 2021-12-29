@@ -25,39 +25,90 @@ class AccountTest {
 	}
 
 	@ParameterizedTest
-	@CsvFileSource(resources = "accounts.csv")
-	void depositWithNegativeAmountShouldFail(String iban,
-			double balance,double amount) throws Exception {
+	@CsvFileSource(resources = "deposit-fails.csv")
+	@DisplayName("deposit negative amount to an accout should fail")
+	void depositWithNegativeAmountShouldFail(String iban, double balance, double amount) throws Exception {
 		// 1. Test Fixture/Setup
 		var acc = new Account(iban, balance);
 		// 2. Call exercise method
 		var result = acc.deposit(amount);
 		// 3. verification
 		assertFalse(result);
-		assertEquals(balance,acc.getBalance(),0.001);
+		assertEquals(balance, acc.getBalance(), 0.001);
+	}
+
+	@ParameterizedTest
+	@CsvFileSource(resources = "withdraw-fails.csv")
+	@DisplayName("withdraw negative amount from an accout should fail")
+	void withdrawWithNegativeAmountShouldFail(String iban, double balance, double amount) throws Exception {
+		// 1. Test Fixture/Setup
+		var acc = new Account(iban, balance);
+		// 2. Call exercise method
+		var result = acc.withdraw(amount);
+		// 3. verification
+		assertFalse(result);
+		assertEquals(balance, acc.getBalance());
+	}
+
+	@ParameterizedTest
+	@CsvFileSource(resources = "withdraw-all.csv")
+	@DisplayName("withdraw all balance from an accout should success")
+	void withdrawAllAmountShouldSuccess(String iban, double balance) throws Exception {
+		// 1. Test Fixture/Setup
+		var acc = new Account(iban, balance);
+		// 2. Call exercise method
+		var allBalance = acc.withdrawAll();
+		// 3. verification
+		assertEquals(allBalance, balance);
+		assertEquals(0, acc.getBalance());
+	}
+
+	
+	@ParameterizedTest
+	@CsvFileSource(resources = "withdraw-success.csv")
+	@DisplayName("withdraw amount under balance from an accout should success")
+	void withdrawUnderBalanceShouldSuccess(String iban, double balance,double amount) throws Exception {
+		// 1. Test Fixture/Setup
+		var acc = new Account(iban, balance);
+		// 2. Call exercise method
+		var result = acc.withdraw(amount);
+		// 3. verification
+		assertTrue(result);
+		assertEquals(balance-amount, acc.getBalance());
 	}
 	
+	@ParameterizedTest
+	@CsvFileSource(resources = "withdraw-fails.csv")
+	@DisplayName("withdraw negative amount or over balance from an accout should fail")
+	void withdrawUnderNegativeAmountShouldFail(String iban, double balance,double amount) throws Exception {
+		// 1. Test Fixture/Setup
+		var acc = new Account(iban, balance);
+		// 2. Call exercise method
+		var result = acc.withdraw(amount);
+		// 3. verification
+		assertFalse(result);
+		assertEquals(balance, acc.getBalance());
+	}
+	
+	@ParameterizedTest
+	@CsvFileSource(resources = "deposit-success.csv")
+	@DisplayName("deposit positive amount to an accout should success")
+	void depositWithPositiveAmountShouldSuccess(String iban, double balance, double amount) throws Exception {
+		// 1. Test Fixture/Setup
+		var acc = new Account(iban, balance);
+		// 2. Call exercise method
+		var result = acc.deposit(amount);
+		// 3. verification
+		assertTrue(result);
+		assertEquals(balance + amount, acc.getBalance());
+	}
+
 	@Test
-	void depositWithPositiveAmountShouldSuccess() throws Exception {
+	void toStringShouldStartWithAccount() throws Exception {
 		// 1. Test Fixture/Setup
 		var acc = new Account("tr1", 10_000);
 		// 2. Call exercise method
-		var result = acc.deposit(1);
 		// 3. verification
-		assertTrue(result);
-		assertEquals(10_001,acc.getBalance());		
+		assertTrue(acc.toString().startsWith("Account"));
 	}
-
 }
-
-
-
-
-
-
-
-
-
-
-
-

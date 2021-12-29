@@ -48,6 +48,7 @@ public class Account extends Object {
 
 	// withdraw is a business method
 	public boolean withdraw(double amount) {
+		System.out.println("Account::withdraw");
 		// validation
 		if (amount <= 0)
 			return false;
