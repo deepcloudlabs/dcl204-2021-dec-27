@@ -7,7 +7,7 @@ import org.junit.platform.suite.api.SuiteDisplayName;
 /**
  * @author Binnur Kurt <binnur.kurt@gmail.com>
  */
-@SelectClasses({AccountTest.class,CheckingAccountTest.class,CustomerTest.class})
+@SelectClasses({ AccountTest.class, CheckingAccountTest.class, CustomerTest.class, BankTest.class })
 @SuiteDisplayName("Domain Test Suite")
 @Suite
 public class DomainTestSuite {

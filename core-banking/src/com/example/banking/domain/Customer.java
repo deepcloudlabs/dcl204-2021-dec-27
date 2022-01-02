@@ -1,8 +1,9 @@
 package com.example.banking.domain;
 
 import java.util.ArrayList;
-import java.util.Collections;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 
@@ -12,7 +13,8 @@ import java.util.Optional;
 public class Customer {
 	private final String identity;
 	private String fullName;
-	private List<Account> accounts = new ArrayList<>();
+	private Map<String, Account> accounts = new LinkedHashMap<>();
+	private List<Account> accountList = new ArrayList<>();
 
 	public Customer(String identity, String fullName) {
 		this.identity = identity;
@@ -32,7 +34,8 @@ public class Customer {
 	}
 
 	public void addAccount(Account account) {
-		accounts.add(account);
+		accounts.put(account.getIban(), account);
+		accountList.add(account);
 	}
 
 	// Overloading: Same class & method name, different signature
@@ -40,25 +43,36 @@ public class Customer {
 	public Optional<Account> removeAccount(int index) {
 		if (index < 0 || index >= accounts.size())
 			return Optional.empty();
-		return Optional.of(accounts.remove(index));
+		return removeAccount(accountList.remove(index).getIban());
 	}
 
 	public Optional<Account> removeAccount(String iban) {
-		Account foundAccount = null;
-		for (var account : accounts) {
-			if (account.getIban().equals(iban)) {
-				foundAccount = account;
-				break;
-			}
-		}
-		if (Objects.nonNull(foundAccount)) {
-			accounts.remove(foundAccount);
-		}
-		return Optional.ofNullable(foundAccount);
+		if (Objects.isNull(iban))
+			return Optional.empty();
+		var account = accounts.remove(iban);
+		accountList.remove(account);
+		return Optional.ofNullable(account);
 	}
 
 	public List<Account> getAccounts() {
-		return Collections.unmodifiableList(accounts);
+		return List.copyOf(accounts.values());
+	}
+
+	@Override
+	public int hashCode() {
+		return Objects.hash(identity);
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		Customer other = (Customer) obj;
+		return Objects.equals(identity, other.identity);
 	}
 
 	@Override

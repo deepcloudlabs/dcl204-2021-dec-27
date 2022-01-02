@@ -148,7 +148,27 @@ class CustomerTest {
 		// 4. Tear-down
 	}
 	
+	
+	@Test
+	void hasCode() throws Exception {
+		// 1. Test Fixture/Setup
+		var customer = new Customer("94954016200", "Jack Bauer");
+		// 2. Call exercise method
+		// 3. verification
+		assertEquals(31 + "94954016200".hashCode(),customer.hashCode());
+	}
 
+	@Test
+	void equalsTest() throws Exception {
+		// 1. Test Fixture/Setup
+		var customer = new Customer("94954016200", "Jack Bauer");
+		// 2. Call exercise method
+		// 3. verification
+		assertFalse(customer.equals(null));
+		assertFalse(customer.equals("should return false"));
+	}
+	
+	
 	@Test
 	void toStringShouldStartWithCustomer() throws Exception {
 		// 1. Test Fixture/Setup

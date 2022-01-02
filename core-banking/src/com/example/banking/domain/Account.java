@@ -8,12 +8,13 @@ public class Account extends Object {
 	// iban is an attribute/state/property/data
 	// iban is an instance and reference variable
 	// iban is automatically initialized to null
-	private String iban;
+	private final String iban;
 
 	// Notes:
 	// balance is an instance and value-typed variable
 	// balance is automatically initialized to 0.0
-	double balance;
+	protected double balance;
+	private AccountStatus status = AccountStatus.ACTIVE;
 
 	// Notes:
 	// Constructor is a special method used to initialize the object state
@@ -24,12 +25,26 @@ public class Account extends Object {
 		this.balance = balance;
 	}
 
+	public Account(String iban, double balance, AccountStatus status) {
+		this.iban = iban;
+		this.balance = balance;
+		this.status = status;
+	}
+
 	public String getIban() {
 		return this.iban;
 	}
 
 	public double getBalance() {
 		return this.balance;
+	}
+
+	public AccountStatus getStatus() {
+		return status;
+	}
+
+	public void setStatus(AccountStatus status) {
+		this.status = status;
 	}
 
 	// Notes:
@@ -60,17 +75,17 @@ public class Account extends Object {
 		return true;
 	}
 
-	// toString is a utility method
-	// its aim is to produce a string representation of the object
-	@Override
-	public String toString() {
-		return "Account [iban=" + iban + ", balance=" + balance + "]";
-	}
-
 	public double withdrawAll() {
 		var balance = this.balance;
 		this.balance = 0.0;
 		return balance;
+	}
+
+	// toString is a utility method
+	// its aim is to produce a string representation of the object
+	@Override
+	public String toString() {
+		return "Account [iban=" + iban + ", balance=" + balance + ", status=" + status + "]";
 	}
 
 }

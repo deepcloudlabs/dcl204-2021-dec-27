@@ -13,14 +13,47 @@ import org.junit.jupiter.params.provider.CsvFileSource;
 class AccountTest {
 
 	@Test
-	@DisplayName("create account object successfuly")
-	void createObjectSuccessfuly() {
+	@DisplayName("create account object with iban and balance successfuly")
+	void createObjectWithIbanAndBalanceSuccessfuly() {
 		// 1. Test Fixture/Setup
 		// 2. Call exercise method
 		var acc = new Account("tr1", 10_000);
 		// 3. Verification
 		assertEquals("tr1", acc.getIban());
 		assertEquals(10_000, acc.getBalance());
+		// 4. Tear-down
+	}
+
+	@Test
+	@DisplayName("create account object with iban, balance, and status successfuly")
+	void createObjectWithIbanBalanceAndStatusSuccessfuly() {
+		// 1. Test Fixture/Setup
+		// 2. Call exercise method
+		var acc = new Account("tr1", 10_000, AccountStatus.BLOCKED);
+		// 3. Verification
+		assertEquals("tr1", acc.getIban());
+		assertEquals(10_000, acc.getBalance());
+		assertEquals(AccountStatus.BLOCKED, acc.getStatus());
+		// 4. Tear-down
+	}
+
+	@Test
+	@DisplayName("set account status to CLOSED successfuly")
+	void setAccountStatusSuccessfuly() {
+		// 1. Test Fixture/Setup
+		// 2. Call exercise method
+		var acc = new Account("tr1", 10_000, AccountStatus.ACTIVE);
+		acc.setStatus(AccountStatus.CLOSED);
+		// 3. Verification
+		assertEquals("tr1", acc.getIban());
+		assertEquals(10_000, acc.getBalance());
+		assertEquals(AccountStatus.CLOSED, acc.getStatus());
+		assertEquals("ACTIVE", AccountStatus.ACTIVE.name());
+		assertEquals("CLOSED", AccountStatus.CLOSED.name());
+		assertEquals("BLOCKED", AccountStatus.BLOCKED.name());
+		assertEquals(0, AccountStatus.ACTIVE.ordinal());
+		assertEquals(1, AccountStatus.CLOSED.ordinal());
+		assertEquals(2, AccountStatus.BLOCKED.ordinal());
 		// 4. Tear-down
 	}
 
@@ -63,24 +96,23 @@ class AccountTest {
 		assertEquals(0, acc.getBalance());
 	}
 
-	
 	@ParameterizedTest
 	@CsvFileSource(resources = "withdraw-success.csv")
 	@DisplayName("withdraw amount under balance from an accout should success")
-	void withdrawUnderBalanceShouldSuccess(String iban, double balance,double amount) throws Exception {
+	void withdrawUnderBalanceShouldSuccess(String iban, double balance, double amount) throws Exception {
 		// 1. Test Fixture/Setup
 		var acc = new Account(iban, balance);
 		// 2. Call exercise method
 		var result = acc.withdraw(amount);
 		// 3. verification
 		assertTrue(result);
-		assertEquals(balance-amount, acc.getBalance());
+		assertEquals(balance - amount, acc.getBalance());
 	}
-	
+
 	@ParameterizedTest
 	@CsvFileSource(resources = "withdraw-fails.csv")
 	@DisplayName("withdraw negative amount or over balance from an accout should fail")
-	void withdrawUnderNegativeAmountShouldFail(String iban, double balance,double amount) throws Exception {
+	void withdrawUnderNegativeAmountShouldFail(String iban, double balance, double amount) throws Exception {
 		// 1. Test Fixture/Setup
 		var acc = new Account(iban, balance);
 		// 2. Call exercise method
@@ -89,7 +121,7 @@ class AccountTest {
 		assertFalse(result);
 		assertEquals(balance, acc.getBalance());
 	}
-	
+
 	@ParameterizedTest
 	@CsvFileSource(resources = "deposit-success.csv")
 	@DisplayName("deposit positive amount to an accout should success")

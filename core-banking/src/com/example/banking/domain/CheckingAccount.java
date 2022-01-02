@@ -11,6 +11,11 @@ public class CheckingAccount extends Account {
 		this.overdraftAmount = overdraftAmount;
 	}
 
+	public CheckingAccount(String iban, double balance, AccountStatus status, double overdraftAmount) {
+		super(iban, balance, status);
+		this.overdraftAmount = overdraftAmount;
+	}
+
 	public double getOverdraftAmount() {
 		return overdraftAmount;
 	}
