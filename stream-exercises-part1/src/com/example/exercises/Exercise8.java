@@ -1,6 +1,6 @@
 package com.example.exercises;
 
-import java.util.Collection;
+import java.util.stream.Collectors;
 
 import com.example.domain.Movie;
 import com.example.service.InMemoryMovieService;
@@ -16,8 +16,10 @@ public class Exercise8 {
 
 	public static void main(String[] args) {
 		// Group the movies by the year and list them
-		Collection<Movie> movies = movieService.findAllMovies();
-
+		var moviesByYear =
+		movieService.findAllMovies().stream()
+		            .collect(Collectors.groupingBy(Movie::getYear));
+		moviesByYear.forEach((year,movies) -> System.out.printf("%d: %s\n",year,movies));
 	}
 
 }
