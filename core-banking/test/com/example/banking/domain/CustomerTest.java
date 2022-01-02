@@ -209,7 +209,7 @@ class CustomerTest {
 		// 2. Call exercise method
 		// 3. verification
 		assertFalse(customer.equals(null));
-		assertFalse(customer.equals("should return false"));
+		assertFalse(customer.equals(new Object()));
 	}
 	
 	
