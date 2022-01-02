@@ -10,7 +10,7 @@ import java.util.Optional;
 /**
  * @author Binnur Kurt <binnur.kurt@gmail.com>
  */
-public class Bank {
+public class Bank implements TransferService {
 	private final int id;
 	private String commercialName;
 	// TODO: Create an enum type: BankType
@@ -62,6 +62,25 @@ public class Bank {
 		         .filter(account -> Arrays.stream(status).filter(st -> st.equals(account.getStatus())).findFirst().isPresent())
 		         .mapToDouble(Account::getBalance)
 		         .sum();
+	}
+
+	@Override
+	public boolean transfer(String fromIdentity, String fromIban, String toIdentity, String toIban, double amount) {
+		if (amount <= 0) return false;
+		var fromCustomer = findCustomerByIdentity(fromIdentity);
+		var toCustomer = findCustomerByIdentity(toIdentity);
+		if (fromCustomer.isPresent() && toCustomer.isPresent()) {
+			var fromAccount = fromCustomer.get().findAccount(fromIban);
+			var toAccount = toCustomer.get().findAccount(toIban);
+			if (fromAccount.isPresent() && fromAccount.get().getStatus().equals(AccountStatus.ACTIVE) && 
+				toAccount.isPresent() && toAccount.get().getStatus().equals(AccountStatus.ACTIVE)){
+				if(fromAccount.get().withdraw(amount)) {
+					toAccount.get().deposit(amount);
+					return true;
+				}
+			}
+		}
+		return false;
 	}
 
 }

@@ -38,6 +38,10 @@ public class Customer {
 		accountList.add(account);
 	}
 
+	public Optional<Account> findAccount(String iban) {
+		return Optional.ofNullable(accounts.get(iban));
+	}
+
 	// Overloading: Same class & method name, different signature
 	// Overriding: Inherited Classes, same method name & signature
 	public Optional<Account> removeAccount(int index) {

@@ -85,6 +85,48 @@ class CustomerTest {
 
 		// 4. Tear-down
 	}
+	
+	@Test
+	@DisplayName("find account by iban from a customer success")
+	void findAccountByIbanSuccess() {
+		// 1. Test Fixture/Setup
+		var customer = new Customer("94954016200", "Jack Bauer");
+		var acc1 = new Account("TR480006276391165871184343",10_000);
+		var acc2 = new CheckingAccount("TR520006284786839673978754",20_000,5_000);
+		var acc3 = new Account("TR840006266285713911717977",30_000);
+		customer.addAccount(acc1);
+		customer.addAccount(acc2);
+		customer.addAccount(acc3);
+		// 2. Call exercise method
+		// 3. Verification		
+		assertEquals(3,customer.getAccounts().size());
+		assertTrue(customer.findAccount("TR480006276391165871184343").isPresent());
+		assertEquals("TR480006276391165871184343",customer.findAccount("TR480006276391165871184343").get().getIban());
+		assertTrue(customer.findAccount("TR520006284786839673978754").isPresent());
+		assertEquals("TR520006284786839673978754",customer.findAccount("TR520006284786839673978754").get().getIban());
+		assertTrue(customer.findAccount("TR840006266285713911717977").isPresent());
+		assertEquals("TR840006266285713911717977",customer.findAccount("TR840006266285713911717977").get().getIban());
+		// 4. Tear-down
+	}
+	
+	@Test
+	@DisplayName("find account by iban from a customer fails")
+	void findAccountByIbanFails() {
+		// 1. Test Fixture/Setup
+		var customer = new Customer("94954016200", "Jack Bauer");
+		var acc1 = new Account("TR480006276391165871184343",10_000);
+		var acc2 = new CheckingAccount("TR520006284786839673978754",20_000,5_000);
+		var acc3 = new Account("TR840006266285713911717977",30_000);
+		customer.addAccount(acc1);
+		customer.addAccount(acc2);
+		customer.addAccount(acc3);
+		// 2. Call exercise method
+		// 3. Verification		
+		assertEquals(3,customer.getAccounts().size());
+		assertTrue(customer.findAccount("TR330006271693398443527616").isEmpty());
+		// 4. Tear-down
+	}
+	
 	@Test
 	@DisplayName("remove account by iban from a customer fails")
 	void removeAccountByIbanFromCustomerFails() {
