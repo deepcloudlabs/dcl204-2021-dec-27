@@ -100,6 +100,8 @@ class CustomerTest {
 		// 3. Verification		
 		assertEquals(3,customer.getAccounts().size());
 		assertTrue(customer.removeAccount("TR330006271693398443527616").isEmpty());
+		assertTrue(customer.removeAccount(null).isEmpty());
+		assertTrue(customer.removeAccount(3).isEmpty());
 		// 4. Tear-down
 	}
 	
