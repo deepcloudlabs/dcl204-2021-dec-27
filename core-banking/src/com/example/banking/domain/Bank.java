@@ -69,23 +69,29 @@ public class Bank implements TransferService {
 	@Override
 	public void transfer(String fromIdentity, String fromIban, String toIdentity, String toIban, double amount) throws InsufficientBalanceException {
 		if (amount <= 0) 
-			throw new IllegalArgumentException(
-					"Amount must be positive.");
+			throw new IllegalArgumentException("Amount must be positive.");
 		var fromCustomer = findCustomerByIdentity(fromIdentity);
+		if (fromCustomer.isEmpty())
+			throw new IllegalArgumentException(String.format("Cannot find the customer %s",fromIdentity));
 		var toCustomer = findCustomerByIdentity(toIdentity);
-		if (fromCustomer.isPresent() && toCustomer.isPresent()) {
-			var fromAccount = fromCustomer.get().findAccount(fromIban);
-			var toAccount = toCustomer.get().findAccount(toIban);
-			if (fromAccount.isPresent() && fromAccount.get().getStatus().equals(AccountStatus.ACTIVE) && 
-				toAccount.isPresent() && toAccount.get().getStatus().equals(AccountStatus.ACTIVE)){
-				try {
-					fromAccount.get().withdraw(amount);
-					toAccount.get().deposit(amount);					
-				}catch (InsufficientBalanceException e) {
-					System.err.println(e.getMessage());
-					throw e; // re-throw
-				}
-			}
+		if (toCustomer.isEmpty())
+			throw new IllegalArgumentException(String.format("Cannot find the customer %s",toIdentity));
+		var fromAccount = fromCustomer.get().findAccount(fromIban);
+		if (fromAccount.isEmpty())
+			throw new IllegalArgumentException(String.format("Cannot find the account %s",fromIban));
+		var toAccount = toCustomer.get().findAccount(toIban);
+		if (toAccount.isEmpty())
+			throw new IllegalArgumentException(String.format("Cannot find the account %s",toIban));
+		if (!fromAccount.get().getStatus().equals(AccountStatus.ACTIVE))
+			throw new IllegalArgumentException(String.format("The account %s is not active",fromIban));
+		if (!toAccount.get().getStatus().equals(AccountStatus.ACTIVE))
+			throw new IllegalArgumentException(String.format("The account %s is not active",toIban));
+		try {
+			fromAccount.get().withdraw(amount);
+			toAccount.get().deposit(amount);			
+		}catch (InsufficientBalanceException e) {
+			System.err.println(e.getMessage());
+			throw e; // re-throw
 		}
 	}
 

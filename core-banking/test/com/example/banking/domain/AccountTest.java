@@ -1,8 +1,9 @@
 package com.example.banking.domain;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -67,10 +68,7 @@ class AccountTest {
 		// 1. Test Fixture/Setup
 		var acc = new Account(iban, balance);
 		// 2. Call exercise method
-		assertThrows(
-				IllegalArgumentException.class, 
-				() -> acc.deposit(amount)
-		);
+		assertThrows(IllegalArgumentException.class, () -> acc.deposit(amount));
 		// 3. verification
 		assertEquals(balance, acc.getBalance(), 0.001);
 	}
@@ -78,15 +76,14 @@ class AccountTest {
 	@ParameterizedTest
 	@CsvFileSource(resources = "withdraw-fails.csv")
 	@DisplayName("withdraw negative amount from an accout should fail")
-	@Disabled
 	void withdrawWithNegativeAmountShouldFail(String iban, double balance, double amount) throws Exception {
 		// 1. Test Fixture/Setup
 		var acc = new Account(iban, balance);
 		// 2. Call exercise method
-		assertThrows(
-				IllegalArgumentException.class,
-				() -> acc.withdraw(amount)
-		);
+		if (amount <= 0)
+			assertThrows(IllegalArgumentException.class, () -> acc.withdraw(amount));
+		else
+			assertThrows(InsufficientBalanceException.class, () -> acc.withdraw(amount));
 		// 3. verification
 		assertEquals(balance, acc.getBalance());
 	}
@@ -123,10 +120,10 @@ class AccountTest {
 		// 1. Test Fixture/Setup
 		var acc = new Account(iban, balance);
 		// 2. Call exercise method
-		assertThrows(
-				InsufficientBalanceException.class, 
-				() -> acc.withdraw(amount)
-		);
+		if (amount <= 0)
+			assertThrows(IllegalArgumentException.class, () -> acc.withdraw(amount));
+		else
+			assertThrows(InsufficientBalanceException.class, () -> acc.withdraw(amount));
 		// 3. verification
 		assertEquals(balance, acc.getBalance());
 	}

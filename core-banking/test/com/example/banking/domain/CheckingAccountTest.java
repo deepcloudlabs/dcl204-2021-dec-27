@@ -7,6 +7,8 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvFileSource;
 
+import com.example.banking.domain.exception.InsufficientBalanceException;
+
 /**
  * @author Binnur Kurt <binnur.kurt@gmail.com>
  */
@@ -28,13 +30,16 @@ class CheckingAccountTest {
 	@ParameterizedTest
 	@CsvFileSource(resources = "withdraw-checking-account-fails.csv")
 	@DisplayName("withdraw negative amount from a checking accout should fail")
-	void withdrawWithNegativeAmountShouldFail(String iban, double balance, double overdraftAmount, double amount) throws Exception {
+	void withdrawWithNegativeAmountShouldFail(String iban, double balance, double overdraftAmount, double amount)
+			throws Exception {
 		// 1. Test Fixture/Setup
 		var acc = new CheckingAccount(iban, balance, overdraftAmount);
 		// 2. Call exercise method
-		var result = acc.withdraw(amount);
+		if (amount<0)
+		   assertThrows(IllegalArgumentException.class, () -> acc.withdraw(amount));
+		else
+			assertThrows(InsufficientBalanceException.class, () -> acc.withdraw(amount));
 		// 3. verification
-		assertFalse(result);
 		assertEquals(balance, acc.getBalance());
 		assertEquals(overdraftAmount, acc.getOverdraftAmount());
 	}
@@ -42,14 +47,14 @@ class CheckingAccountTest {
 	@ParameterizedTest
 	@CsvFileSource(resources = "withdraw-checking-account-success.csv")
 	@DisplayName("withdraw amount under balance and overdraftAmount from an checking accout should success")
-	void withdrawUnderBalanceAndOverdraftAmountShouldSuccess(String iban, double balance,double  overdraftAmount,double amount) throws Exception {
+	void withdrawUnderBalanceAndOverdraftAmountShouldSuccess(String iban, double balance, double overdraftAmount,
+			double amount) throws Exception {
 		// 1. Test Fixture/Setup
-		var acc = new CheckingAccount(iban, balance,overdraftAmount);
+		var acc = new CheckingAccount(iban, balance, overdraftAmount);
 		// 2. Call exercise method
-		var result = acc.withdraw(amount);
+		acc.withdraw(amount);
 		// 3. verification
-		assertTrue(result);
 		assertEquals(balance - amount, acc.getBalance());
 	}
-	
+
 }
