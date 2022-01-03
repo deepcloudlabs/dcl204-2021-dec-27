@@ -1,6 +1,8 @@
 package com.example;
 
 import java.util.concurrent.ExecutionException;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ForkJoinPool;
 import java.util.concurrent.RecursiveTask;
 
 /**
@@ -25,6 +27,15 @@ public class StudyParallelProgramming {
 	}
 	public static void main(String[] args) {
 		System.err.println(serialSum());
+		var fjp = ForkJoinPool.commonPool();
+		
+		var start = System.currentTimeMillis();
+		var result = fjp.invoke(new SummationTask(numbers,0,SIZE));
+		var stop = System.currentTimeMillis();
+		var duration = stop-start;
+		System.err.printf("%16s %8d\n","Parallel sum",duration);
+
+		System.err.println(result);
 	}
 
 }
@@ -42,7 +53,7 @@ class SummationTask extends RecursiveTask<Long> {
 
 	@Override
 	protected Long compute() {
-		if (size<=1_000_000) { // serial
+		if (size<=500_000) { // serial
 			var sum= 0L;
 			for (int i=startIndex,j=0;j<size;i++,j++) {
 				sum += array[i];
@@ -51,16 +62,16 @@ class SummationTask extends RecursiveTask<Long> {
 		}else {
 			try {
 				var halfSize= size/2;
+				var align= size%2;
 				var left = new SummationTask(array, startIndex, halfSize);
-				var right = new SummationTask(array, startIndex+halfSize, halfSize);
+				var right = new SummationTask(array, startIndex+halfSize, halfSize+align);
 				invokeAll(left,right);
 				return left.get()+right.get();
 			} catch (InterruptedException | ExecutionException e) {
 				System.err.println(e.getMessage());
 			}
 		}
-			
-		return null;
+		return 0L;
 	}
 	
 }
