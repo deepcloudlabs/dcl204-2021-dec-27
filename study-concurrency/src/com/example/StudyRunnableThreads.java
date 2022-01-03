@@ -1,6 +1,9 @@
 package com.example;
 
 import java.util.List;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 import java.util.concurrent.ThreadLocalRandom;
 
 /**
@@ -8,18 +11,18 @@ import java.util.concurrent.ThreadLocalRandom;
  */
 public class StudyRunnableThreads {
 
-	public static void main(String[] args) throws InterruptedException {
+	public static void main(String[] args) throws InterruptedException, ExecutionException {
+		int cpus = Runtime.getRuntime().availableProcessors();
+		var threadPool = Executors.newFixedThreadPool(cpus);
 		var task1 = new LotteryTask();
 		var task2 = new LotteryTask();
-		var t1 = new Thread(task1);
-		var t2 = new Thread(task2);
-		t1.start();
-		t2.start();
-		// do not do this! --> t1.run(); // main-thread
-		t1.join(); // main-thread blocks until t1 finishes its job!
+		var future1 = threadPool.submit(task1);
+		var future2 = threadPool.submit(task2);
+		future1.get(); // main-thread blocks until t1 finishes its job!
 		System.err.println(task1.getNumbers());
-		t2.join();
+		future2.get();
 		System.err.println(task2.getNumbers());
+		threadPool.shutdown();
 	}
 
 }
