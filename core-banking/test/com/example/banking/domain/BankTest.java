@@ -90,8 +90,11 @@ class BankTest {
 		kate.addAccount(new CheckingAccount("tr6", 60_000, AccountStatus.CLOSED, 3_000));
 		assertFalse(garantiBbva.transfer("1111111110", "tr1", "80450397882", "tr4", 500));
 		assertFalse(garantiBbva.transfer("57487680140", "tr1", "1111111110", "tr4", 500));
-		assertFalse(garantiBbva.transfer("57487680140", "tr6", "80450397882", "tr4", 500));
-		assertFalse(garantiBbva.transfer("57487680140", "tr1", "80450397882", "tr7", 500));
+		assertFalse(garantiBbva.transfer("57487680140", "tr2", "80450397882", "tr4", 500));
+		assertFalse(garantiBbva.transfer("57487680140", "tr3", "80450397882", "tr4", 500));
+		assertFalse(garantiBbva.transfer("57487680140", "tr2", "80450397882", "tr5", 500));
+		assertFalse(garantiBbva.transfer("57487680140", "tr2", "80450397882", "tr6", 500));
+		assertFalse(garantiBbva.transfer("57487680140", "tr1", "80450397882", "tr4", 10_001));
 		assertEquals(10_000,tr1.getBalance());
 		assertEquals(40_000,tr4.getBalance());
 		assertEquals(210_000, garantiBbva.getTotalBalance(AccountStatus.ACTIVE, AccountStatus.BLOCKED, AccountStatus.CLOSED));

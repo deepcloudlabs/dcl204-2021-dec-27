@@ -1,5 +1,7 @@
 package com.example.banking.domain;
 
+import com.example.banking.domain.exception.InsufficientBalanceException;
+
 /**
  * @author Binnur Kurt <binnur.kurt@gmail.com>
  */
@@ -52,27 +54,32 @@ public class Account extends Object {
 	// returning a boolean value to refer whether the method is successful or not
 	// is generally not a good idea!
 	// we will give a better solution later on the course.
-	public boolean deposit(double amount) {
+	public double deposit(double amount) {
 		// validation
 		if (amount <= 0)
-			return false;
+			throw new IllegalArgumentException(
+					"Amount must be positive.");
 		// business logic
 		this.balance = this.balance + amount;
-		return true;
+		return balance;
 	}
 
 	// withdraw is a business method
-	public boolean withdraw(double amount) {
+	public double withdraw(double amount) throws InsufficientBalanceException {
 		System.out.println("Account::withdraw");
 		// validation
 		if (amount <= 0)
-			return false;
+			throw new IllegalArgumentException(
+					"Amount must be positive.");
 		// business rule
 		if (amount > this.balance)
-			return false;
+			throw new InsufficientBalanceException(
+			   "Your balance does not cover your expenses",
+			   amount-balance
+			);
 		// this.balance = this.balance - amount;
 		this.balance -= amount;
-		return true;
+		return balance;
 	}
 
 	public double withdrawAll() {

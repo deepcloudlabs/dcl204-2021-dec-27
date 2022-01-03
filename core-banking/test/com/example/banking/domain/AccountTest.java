@@ -2,10 +2,13 @@ package com.example.banking.domain;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvFileSource;
+
+import com.example.banking.domain.exception.InsufficientBalanceException;
 
 /**
  * @author Binnur Kurt <binnur.kurt@gmail.com>
@@ -64,22 +67,27 @@ class AccountTest {
 		// 1. Test Fixture/Setup
 		var acc = new Account(iban, balance);
 		// 2. Call exercise method
-		var result = acc.deposit(amount);
+		assertThrows(
+				IllegalArgumentException.class, 
+				() -> acc.deposit(amount)
+		);
 		// 3. verification
-		assertFalse(result);
 		assertEquals(balance, acc.getBalance(), 0.001);
 	}
 
 	@ParameterizedTest
 	@CsvFileSource(resources = "withdraw-fails.csv")
 	@DisplayName("withdraw negative amount from an accout should fail")
+	@Disabled
 	void withdrawWithNegativeAmountShouldFail(String iban, double balance, double amount) throws Exception {
 		// 1. Test Fixture/Setup
 		var acc = new Account(iban, balance);
 		// 2. Call exercise method
-		var result = acc.withdraw(amount);
+		assertThrows(
+				IllegalArgumentException.class,
+				() -> acc.withdraw(amount)
+		);
 		// 3. verification
-		assertFalse(result);
 		assertEquals(balance, acc.getBalance());
 	}
 
@@ -103,9 +111,8 @@ class AccountTest {
 		// 1. Test Fixture/Setup
 		var acc = new Account(iban, balance);
 		// 2. Call exercise method
-		var result = acc.withdraw(amount);
+		acc.withdraw(amount);
 		// 3. verification
-		assertTrue(result);
 		assertEquals(balance - amount, acc.getBalance());
 	}
 
@@ -116,9 +123,11 @@ class AccountTest {
 		// 1. Test Fixture/Setup
 		var acc = new Account(iban, balance);
 		// 2. Call exercise method
-		var result = acc.withdraw(amount);
+		assertThrows(
+				InsufficientBalanceException.class, 
+				() -> acc.withdraw(amount)
+		);
 		// 3. verification
-		assertFalse(result);
 		assertEquals(balance, acc.getBalance());
 	}
 
@@ -129,9 +138,8 @@ class AccountTest {
 		// 1. Test Fixture/Setup
 		var acc = new Account(iban, balance);
 		// 2. Call exercise method
-		var result = acc.deposit(amount);
+		acc.deposit(amount);
 		// 3. verification
-		assertTrue(result);
 		assertEquals(balance + amount, acc.getBalance());
 	}
 

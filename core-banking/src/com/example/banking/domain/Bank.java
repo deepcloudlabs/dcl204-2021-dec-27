@@ -7,6 +7,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
+import com.example.banking.domain.exception.InsufficientBalanceException;
+
 /**
  * @author Binnur Kurt <binnur.kurt@gmail.com>
  */
@@ -65,8 +67,10 @@ public class Bank implements TransferService {
 	}
 
 	@Override
-	public boolean transfer(String fromIdentity, String fromIban, String toIdentity, String toIban, double amount) {
-		if (amount <= 0) return false;
+	public void transfer(String fromIdentity, String fromIban, String toIdentity, String toIban, double amount) throws InsufficientBalanceException {
+		if (amount <= 0) 
+			throw new IllegalArgumentException(
+					"Amount must be positive.");
 		var fromCustomer = findCustomerByIdentity(fromIdentity);
 		var toCustomer = findCustomerByIdentity(toIdentity);
 		if (fromCustomer.isPresent() && toCustomer.isPresent()) {
@@ -74,13 +78,15 @@ public class Bank implements TransferService {
 			var toAccount = toCustomer.get().findAccount(toIban);
 			if (fromAccount.isPresent() && fromAccount.get().getStatus().equals(AccountStatus.ACTIVE) && 
 				toAccount.isPresent() && toAccount.get().getStatus().equals(AccountStatus.ACTIVE)){
-				if(fromAccount.get().withdraw(amount)) {
-					toAccount.get().deposit(amount);
-					return true;
+				try {
+					fromAccount.get().withdraw(amount);
+					toAccount.get().deposit(amount);					
+				}catch (InsufficientBalanceException e) {
+					System.err.println(e.getMessage());
+					throw e; // re-throw
 				}
 			}
 		}
-		return false;
 	}
 
 }

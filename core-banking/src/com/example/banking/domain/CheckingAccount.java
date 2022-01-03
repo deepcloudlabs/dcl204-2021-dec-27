@@ -1,5 +1,7 @@
 package com.example.banking.domain;
 
+import com.example.banking.domain.exception.InsufficientBalanceException;
+
 /**
  * @author Binnur Kurt <binnur.kurt@gmail.com>
  */
@@ -21,16 +23,19 @@ public class CheckingAccount extends Account {
 	}
 
 	@Override
-	public boolean withdraw(double amount) {
+	public double withdraw(double amount) throws InsufficientBalanceException {
 		System.out.println("CheckingAccount::withdraw");
 		// validation
 		if (amount <= 0.0)
-			return false;
+			throw new IllegalArgumentException(
+					"Amount must be positive.");
 		// business rule
 		if (amount > (balance + overdraftAmount))
-			return false;
-		this.balance -= amount;
-		return true;
+			throw new InsufficientBalanceException(
+					   "Your balance does not cover your expenses",
+					   amount-balance-overdraftAmount
+					);		this.balance -= amount;
+		return balance;
 	}
 
 }
