@@ -1,7 +1,11 @@
 package com.example.animals.exercises;
 
+import java.security.SecureRandom;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Random;
+import java.util.function.Supplier;
+import java.util.stream.IntStream;
 
 import com.example.animals.domain.Animal;
 import com.example.animals.domain.Cat;
@@ -14,10 +18,20 @@ import com.example.animals.domain.Spider;
  *
  */
 public class Exercise4 {
+	private static final Random random = new SecureRandom();
+	private static final Supplier<Animal> spiderCreator = Spider::new;
+	private static final Supplier<Animal> catCreator = Cat::new;
+	private static final Supplier<Animal> fishCreator = () -> new Fish("Çakıl");
+	private static final List<Supplier<Animal>> suppliers = Arrays.asList(spiderCreator, catCreator, fishCreator);
+
 	public static void main(String[] args) {
-		// Take a list of 100 random animals 
-		List<Animal> animals = Arrays.asList(new Cat(), new Spider(), new Cat("Tekir"), new Fish("Free Willy"),
-				new Spider(), new Fish("Jaws"));
-		
+		// Take a list of 100 random animals
+		final var randomAnimals = 
+			IntStream.generate(() -> random.nextInt(suppliers.size()))
+			.mapToObj(suppliers::get)
+			.map(Supplier::get)
+			.limit(100)
+			.toList();
+		randomAnimals.forEach(System.out::println);
 	}
 }
