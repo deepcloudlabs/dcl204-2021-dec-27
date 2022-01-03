@@ -1,5 +1,6 @@
 package com.example;
 
+import java.util.Arrays;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ForkJoinPool;
@@ -9,7 +10,7 @@ import java.util.concurrent.RecursiveTask;
  * @author Binnur Kurt <binnur.kurt@gmail.com>
  */
 public class StudyParallelProgramming {
-	private static final int SIZE = 1_000_000_000;
+	private static final int SIZE = 2_000_000_000;
 	private static int[] numbers = new int[SIZE];
 	static {
 		for (var i=0;i<SIZE;++i)
@@ -36,6 +37,11 @@ public class StudyParallelProgramming {
 		System.err.printf("%16s %8d\n","Parallel sum",duration);
 
 		System.err.println(result);
+		start = System.currentTimeMillis();
+		Arrays.stream(numbers).parallel().sum();
+		stop = System.currentTimeMillis();
+		duration = stop-start;
+		System.err.printf("%16s %8d\n","Stream api",duration);
 	}
 
 }
@@ -53,7 +59,7 @@ class SummationTask extends RecursiveTask<Long> {
 
 	@Override
 	protected Long compute() {
-		if (size<=500_000) { // serial
+		if (size<=2_000_000) { // serial
 			var sum= 0L;
 			for (int i=startIndex,j=0;j<size;i++,j++) {
 				sum += array[i];
